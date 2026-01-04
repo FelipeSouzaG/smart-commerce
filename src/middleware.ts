@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-
+export const runtime = 'edge';
 export const config = {
   matcher: [
     '/((?!api/|_next/|_static/|favicon.ico|sitemap.xml|robots.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
