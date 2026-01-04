@@ -1,11 +1,12 @@
 
 'use client';
+export const runtime = 'edge';
 
 import React, { useState, useEffect, useMemo } from "react";
 import { useCart } from "@/context/cart-context";
 import { formatCurrency } from "@/lib/utils";
 import Link from "next/link";
-import { Trash2, ArrowLeft, MessageCircle, ShoppingBag, MapPin, User, CheckCircle, CreditCard, Banknote, ShieldCheck } from "lucide-react";
+import { Trash2, ArrowLeft, MessageCircle, ShoppingBag, MapPin, User, CheckCircle, CreditCard, Banknote } from "lucide-react";
 import { postStoreData, fetchStoreData } from "@/lib/api";
 import StoreFooter from "@/components/shop/StoreFooter";
 
