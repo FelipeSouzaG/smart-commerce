@@ -4,7 +4,7 @@ import { formatCurrency } from "@/lib/utils";
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
 import AddToCartButton from "@/components/shop/AddToCartButton";
-
+export const runtime = 'edge';
 export default async function StorePage({ params }: { params: { domain: string } }) {
     const domain = params.domain;
     
