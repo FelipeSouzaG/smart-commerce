@@ -9,6 +9,7 @@ import { ShoppingBag } from "lucide-react";
 
 // Force dynamic rendering to ensure fresh data
 export const revalidate = 60;
+export const runtime = 'edge';
 
 export default async function StorePage({ params }: { params: { domain: string } }) {
     const { domain } = params;
