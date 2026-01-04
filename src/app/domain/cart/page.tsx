@@ -1,6 +1,6 @@
 
 'use client';
-
+export const runtime = 'edge';
 import React, { useState, useEffect, useMemo } from "react";
 import { useCart } from "@/context/cart-context";
 import { formatCurrency } from "@/lib/utils";
