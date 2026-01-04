@@ -1,12 +1,11 @@
 
 'use client';
-export const runtime = 'edge';
 
 import React, { useState, useEffect, useMemo } from "react";
 import { useCart } from "@/context/cart-context";
 import { formatCurrency } from "@/lib/utils";
 import Link from "next/link";
-import { Trash2, ArrowLeft, MessageCircle, ShoppingBag, MapPin, User, CheckCircle, CreditCard, Banknote } from "lucide-react";
+import { Trash2, ArrowLeft, MessageCircle, ShoppingBag, MapPin, User, CheckCircle, CreditCard, Banknote, ShieldCheck } from "lucide-react";
 import { postStoreData, fetchStoreData } from "@/lib/api";
 import StoreFooter from "@/components/shop/StoreFooter";
 
@@ -382,7 +381,7 @@ export default function CartPage({ params }: { params: { domain: string } }) {
                         {successData.whatsappLink && (
                             <a 
                                 href={successData.whatsappLink} 
-                                className="block w-full py-4 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition-all shadow-lg shadow-green-200 flex items-center justify-center gap-2"
+                                className="w-full py-4 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition-all shadow-lg shadow-green-200 flex items-center justify-center gap-2"
                             >
                                 <MessageCircle size={20} />
                                 Falar com Vendedor no WhatsApp
