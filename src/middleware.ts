@@ -24,4 +24,3 @@ export default async function middleware(req: NextRequest) {
 
   return NextResponse.rewrite(new URL(`/domain/${hostname}${path}`, req.url));
 }
-
