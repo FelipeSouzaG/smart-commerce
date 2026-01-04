@@ -1,5 +1,6 @@
 
 'use client';
+export const runtime = 'edge';
 
 import React, { useState, useEffect, useMemo } from "react";
 import { useCart } from "@/context/cart-context";
@@ -7,6 +8,7 @@ import { formatCurrency } from "@/lib/utils";
 import Link from "next/link";
 import { Trash2, ArrowLeft, MessageCircle, ShoppingBag, MapPin, User, CheckCircle, CreditCard, Banknote } from "lucide-react";
 import { postStoreData, fetchStoreData } from "@/lib/api";
+import StoreFooter from "@/components/shop/StoreFooter";
 
 // Helper Formatters
 const formatPhone = (val: string) => {
@@ -53,6 +55,20 @@ export default function CartPage({ params }: { params: { domain: string } }) {
     const [cepLoading, setCepLoading] = useState(false);
     const [cepError, setCepError] = useState('');
 
+    // Legal
+    const [acceptedTerms, setAcceptedTerms] = useState(false);
+    
+    // Config for Policies
+    const [config, setConfig] = useState<any>(null);
+
+    useEffect(() => {
+        const loadConfig = async () => {
+            const data = await fetchStoreData(params.domain, 'config');
+            setConfig(data);
+        };
+        loadConfig();
+    }, [params.domain]);
+
     // Dynamic Total Calculation
     const calculatedTotal = useMemo(() => {
         return items.reduce((acc, item) => {
@@ -92,6 +108,7 @@ export default function CartPage({ params }: { params: { domain: string } }) {
     const handleCheckout = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!number) { alert("Número do endereço é obrigatório."); return; }
+        if (!acceptedTerms) { alert("Você precisa aceitar os Termos de Uso e Política de Privacidade para continuar."); return; }
         
         setLoading(true);
         
@@ -147,7 +164,7 @@ export default function CartPage({ params }: { params: { domain: string } }) {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8 px-4 font-sans">
+        <div className="min-h-screen bg-gray-50 py-8 px-4 font-sans pb-24">
             <div className="container mx-auto max-w-2xl">
                 {currentStep < 2 && (
                     <div className="mb-6 flex items-center justify-between">
@@ -315,15 +332,30 @@ export default function CartPage({ params }: { params: { domain: string } }) {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* LEGAL CHECKBOX */}
+                            <div className="pt-4 border-t border-gray-100">
+                                <label className="flex gap-3 items-start p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors border border-transparent hover:border-gray-200">
+                                    <input 
+                                        type="checkbox" 
+                                        checked={acceptedTerms}
+                                        onChange={e => setAcceptedTerms(e.target.checked)}
+                                        className="mt-1 w-5 h-5 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"
+                                    />
+                                    <span className="text-sm text-gray-600">
+                                        Li, compreendi e concordo com os <strong className="text-indigo-600">Termos de Uso</strong> e <strong className="text-indigo-600">Política de Privacidade</strong> desta loja.
+                                    </span>
+                                </label>
+                            </div>
                             
-                            <div className="pt-4 border-t border-gray-100 flex flex-col gap-3">
+                            <div className="pt-2 flex flex-col gap-3">
                                 <div className="flex justify-between items-center text-gray-900">
                                     <span className="font-medium">Total ({paymentMode === 'cash' ? 'Pix' : 'Cartão'}):</span>
                                     <span className="text-xl font-bold">{formatCurrency(calculatedTotal)}</span>
                                 </div>
                                 <button 
                                     type="submit" 
-                                    disabled={loading}
+                                    disabled={loading || !acceptedTerms}
                                     className="w-full px-8 py-3.5 bg-green-600 text-white font-bold rounded-xl hover:bg-green-700 transition-all shadow-lg transform hover:-translate-y-1 disabled:opacity-70 disabled:transform-none disabled:cursor-not-allowed flex justify-center items-center gap-2"
                                 >
                                     {loading ? <span className="animate-pulse">Processando...</span> : <>Finalizar Pedido <CheckCircle size={18} /></>}
@@ -350,7 +382,7 @@ export default function CartPage({ params }: { params: { domain: string } }) {
                         {successData.whatsappLink && (
                             <a 
                                 href={successData.whatsappLink} 
-                                className="block w-full py-4 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition-all shadow-lg shadow-green-200 flex items-center justify-center gap-2"
+                                className="w-full py-4 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition-all shadow-lg shadow-green-200 flex items-center justify-center gap-2"
                             >
                                 <MessageCircle size={20} />
                                 Falar com Vendedor no WhatsApp
@@ -363,6 +395,9 @@ export default function CartPage({ params }: { params: { domain: string } }) {
                     </div>
                 )}
             </div>
+
+            {/* Injeta o footer no checkout para que o cliente possa ler os termos se quiser */}
+            {config && <StoreFooter config={config} />}
         </div>
     );
 }
